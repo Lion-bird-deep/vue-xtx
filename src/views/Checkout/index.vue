@@ -37,8 +37,8 @@ const confirm = () => {
 // 创建订单
 const createOrder = async () => {
   const res = await createOrderAPI({
-    deliveryTimeType: 1,
-    payType: 1,
+    deliveryTimeType: selectedDeliveryTime.value, // 替换为选中的配送时间
+    payType: selectedPayType.value, // 替换为选中的支付方式
     payChannel: 1,
     buyerMessage: '',
     goods: checkInfo.value.goods.map(item => {
@@ -59,6 +59,11 @@ const createOrder = async () => {
   // 更新购物车
   cartStore.updateNewList()
 }
+
+// 配送时间选中状态（1=不限时间，2=工作日，3=双休日）
+const selectedDeliveryTime = ref(1)
+// 支付方式选中状态（1=在线支付，2=货到付款）
+const selectedPayType = ref(1)
 
 </script>
 
@@ -119,15 +124,20 @@ const createOrder = async () => {
         <!-- 配送时间 -->
         <h3 class="box-title">配送时间</h3>
         <div class="box-body">
-          <a class="my-btn active" href="javascript:;">不限送货时间：周一至周日</a>
-          <a class="my-btn" href="javascript:;">工作日送货：周一至周五</a>
-          <a class="my-btn" href="javascript:;">双休日、假日送货：周六至周日</a>
+          <a class="my-btn" :class="{ active: selectedDeliveryTime === 1 }" @click="selectedDeliveryTime = 1"
+            href="javascript:;">不限送货时间：周一至周日</a>
+          <a class="my-btn" :class="{ active: selectedDeliveryTime === 2 }" @click="selectedDeliveryTime = 2"
+            href="javascript:;">工作日送货：周一至周五</a>
+          <a class="my-btn" :class="{ active: selectedDeliveryTime === 3 }" @click="selectedDeliveryTime = 3"
+            href="javascript:;">双休日、假日送货：周六至周日</a>
         </div>
         <!-- 支付方式 -->
         <h3 class="box-title">支付方式</h3>
         <div class="box-body">
-          <a class="my-btn active" href="javascript:;">在线支付</a>
-          <a class="my-btn" href="javascript:;">货到付款</a>
+          <a class="my-btn" :class="{ active: selectedPayType === 1 }" @click="selectedPayType = 1"
+            href="javascript:;">在线支付</a>
+          <a class="my-btn" :class="{ active: selectedPayType === 2 }" @click="selectedPayType = 2"
+            href="javascript:;">货到付款</a>
           <span style="color:#999">货到付款需付5元手续费</span>
         </div>
         <!-- 金额明细 -->
@@ -178,7 +188,8 @@ const createOrder = async () => {
       </span>
     </template>
   </el-dialog>
-<!-- 添加地址 --></template>
+  <!-- 添加地址 -->
+</template>
 
 <style scoped lang="scss">
 .xtx-pay-checkout-page {
